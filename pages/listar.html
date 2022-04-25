@@ -28,7 +28,8 @@
 
     <div class="container" style="margin-top: 50px;">
         <div class="row">
-            <table class="table col-12 table-hover table-dark table-users" style="box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);">
+            <table class="table col-12 table-hover table-dark table-users"
+                style="box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);">
                 <thead>
                     <tr>
                         <th scope="col">ID</th>
@@ -43,33 +44,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Thalles</td>
-                        <td>02/05/1992</td>
-                        <td>Aracaju/SE</td>
-                        <td>Brasil</td>
-                        <td>Masculino</td>
-                        <td>846.680.325-49</td>
-                        <td>
-                            <a href="update.html" class="btn btn-warning"><i class="fa-solid fa-arrows-rotate"></i></a>
-                        </td>
-                        <td>
-                            <form action="#" method="POST" style="display: inline;" onsubmit="confDel(event, this)">
-                                <input type="hidden" name="id" value="">
-                                <button class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></button>
-                            </form>
-                        </td>
-                    </tr>
+                    
                 </tbody>
             </table>
         </div>
     </div>
 
     <!-- SRIPTS  -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"
+        integrity="sha512-n/4gHW3atM3QqRcbCn6ewmpxcLAHGaDjpEBu4xZd47N0W2oQ+6q7oc3PXstrJYXcbNU1OHdQ1T7pAP+gi5Yu8g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
         integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
         crossorigin="anonymous"></script>
@@ -83,14 +67,32 @@
         integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <script defer>
-        fetch('https://servicodados.ibge.gov.br/api/v1/localidades/paises')
-            .then((resp) => resp.json())
-            .then((data) => {
-                data.forEach(country => {
-                    document.getElementById('data-country').innerHTML(country.nome);
-                });
-            });
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: 'http://localhost:8080/users',
+                success: function (resp) {
+                    $.each(resp, function (index, item) {
+                        let tr = `
+                                <tr>
+                                    <td>${item.id}</td>
+                                    <td>${item.name}</td>
+                                    <td>${item.birthDate}</td>
+                                    <td>${item.nationality}</td>
+                                    <td>${item.naturalness}</td>
+                                    <td>${item.sex}</td>
+                                    <td>${item.cpf}</td>
+                                    <td><a href="http://127.0.0.1:8080/${item.id}" class="btn btn-warning"><i class="fa-solid fa-arrows-rotate"></i></a></td>
+                                    <td> <form action="#" method="POST" style="display: inline;" onsubmit="confDel(event, this)"><input type="hidden" name="id" value="${item.id}"><button class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></button></form></tr>
+                            `;
+                            $('table tbody').append(tr)
+                    });
+                },
+                error: function (err) {
+                    console.error(err);
+                }
+            })
+        });
     </script>
 
     <script>
@@ -102,7 +104,6 @@
             }
         }
     </script>
-
 </body>
 
 </html>

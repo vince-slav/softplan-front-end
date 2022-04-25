@@ -10,7 +10,7 @@
         integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     <link rel="canonical" href="https://getbootstrap.com/docs/4.6/examples/product/">
     <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <link href="../assets/css/main.css" rel="stylesheet">
 </head>
 
@@ -26,24 +26,27 @@
     <div class="container" style="margin-top: 50px;">
         <div class="card card-login mx-auto mt-5"
             style="width: 100%; border-radius: 15px; box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1) ;">
-            <div class="card-header bg-secondary" style="box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2); border-bottom: none;">
-                <h4 class="text-light text-center" >Cadastro de novo usuário</h4>
+            <div class="card-header bg-secondary"
+                style="box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2); border-bottom: none;">
+                <h4 class="text-light text-center">Cadastro de novo usuário</h4>
             </div>
             <div class="card-body">
-                <form>
+                <form id="form-insert-user" method="POST" action="">
                     <div class="form-row">
                         <div class="col-md-6 mb-3">
                             <label for="validationServer01">Nome completo</label>
-                            <input type="text" class="form-control " id="validationServer01" value="" required>
+                            <input type="text" class="form-control " name="name" id="validationServer01" value=""
+                                required>
                         </div>
                         <div class="col-md-3 mb-3">
                             <label for="validationServer02">E-mail</label>
-                            <input type="email" class="form-control " id="validationServer02" value="" required>
+                            <input type="email" class="form-control" name="email" id="validationServer02" value=""
+                                required>
                         </div>
                         <div class="col-md-3 mb-3">
                             <label for="validationServer03">Data de nascimento</label>
                             <input type="date" class="form-control" id="validationServer03"
-                                aria-describedby="validationServer03Feedback" required>
+                                aria-describedby="validationServer03Feedback" name="birthDate" required>
                             <div id="validationServer03Feedback" class="invalid-feedback">
                                 Por favor, insira um data válida.
                             </div>
@@ -52,22 +55,20 @@
                     <div class="form-row">
                         <div class="col-md-3 mb-3">
                             <label for="validationServer04">País</label>
-                            <select class="custom-select " id="validationServer04"
-                                aria-describedby="validationServer04Feedback" required>
-                                <option value="data-country"></option>
-                            </select>
+                            <<input type="date" class="form-control" id="validationServer03"
+                                aria-describedby="validationServer03Feedback" name="nationality">
                         </div>
                         <div class="col-md-3 mb-3">
                             <label for="validationServer03">Naturalidade</label>
                             <input type="text" class="form-control " id="validationServer03"
                                 aria-describedby="validationServer03Feedback" placeholder="Ex. Aracaju/SE" required>
-                            <div id="validationServer03Feedback" class="invalid-feedback">
+                            <div id="validationServer03Feedback" name="naturalness" class="invalid-feedback">
                                 Please provide a valid city.
                             </div>
                         </div>
                         <div class="col-md-3 mb-3">
                             <label for="validationServer04">Sexo</label>
-                            <select class="custom-select" id="validationServer04"
+                            <select class="custom-select" id="validationServer04" name="sex"
                                 aria-describedby="validationServer04Feedback" required>
                                 <option value="1">Masculino</option>
                                 <option value="2">Feminino</option>
@@ -76,7 +77,7 @@
                         <div class="col-md-3 mb-3">
                             <label for="validationServer05">CPF</label>
                             <input type="text" class="form-control cpf" id="validationServer05"
-                                aria-describedby="validationServer05Feedback" required>
+                                aria-describedby="validationServer05Feedback" name="cpf" required>
                             <div id="validationServer05Feedback" class="invalid-feedback">
                                 CPF inválido.
                             </div>
@@ -119,6 +120,42 @@
         $(".cpf").mask("000.000.000-00");
     </script>
 
+    <script defer>
+        $(document).ready(function () {
+            $.ajax({
+                url: 'https://servicodados.ibge.gov.br/api/v1/localidades/paises',
+                success: function (resp) {
+                    $.each(resp, function (index, item) {
+                        $('.country-list').append(resp.nome);
+                    });
+                },
+                error: function (err) {
+                    console.error(err);
+                }
+            })
+
+            $('form-insert-user').on('submit', function (event) {
+                event.preventDefault();
+                let data = {}
+                $.each($(this).serializeArray(), function (index, item) {
+                    data[item.name] = item.value;
+                })
+                $.post('http://localhost:8080/users', $(this).serializeArray(data));
+            })
+
+        })
+    </script>
+
+    <script>
+
+        // fetch('https://servicodados.ibge.gov.br/api/v1/localidades/paises')
+        //     .then((resp) => resp.json())
+        //     .then((data) => {
+        //         data.forEach(country => {
+        //             document.getElementById('data-country').innerHTML(country.nome);
+        //         });
+        //     });
+    </script>
 
 </body>
 
